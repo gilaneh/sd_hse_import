@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sd_hse_import_data_form" model="ir.ui.view">
+            <field name="name">sd_hse_import.data</field>
+            <field name="model">sd_hse_import.data</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <header>
+                        <button name="process_records" string="Process" type="object" class="btn btn-primary mx-1"/>
+                    </header>
+                    <field name="active" invisible="1" />
+
+                    <field name="project"/>
+                    <field name="data_date"/>
+                    <field name="description"/>
+                    <field name="data_file"/>
+                    <field name="data_sheet"/>
+                    <field name="data_sheet_date"/>
+                    <field name="data_weather"/>
+                    <field name="data_max_temp"/>
+                    <field name="data_min_temp"/>
+                    <field name="data_wind"/>
+                    <field name="data_subcontractor"/>
+                    <field name="data_contractor"/>
+                    <field name="data_local"/>
+                    <field name="data_client"/>
+                    <field name="data_visitor"/>
+                    <field name="data_Fatality"/>
+                    <field name="data_PTD_PPD"/>
+                    <field name="data_LTI"/>
+                    <field name="data_MTC"/>
+                    <field name="data_Audits"/>
+                    <field name="data_UC_UA"/>
+                    <field name="data_Near_Miss"/>
+                    <field name="data_meetings"/>
+                    <field name="data_training"/>
+                    <field name="data_FAC"/>
+                    <field name="data_RVA"/>
+                    <field name="data_Fire"/>
+                    <field name="data_prdc"/>
+                    <field name="data_medical_rest"/>
+                    <field name="data_tbm"/>
+                    <field name="data_anomaly"/>
+                    <field name="data_drill"/>
+                    <field name="data_induction"/>
+                    <field name="data_ptw"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="sd_hse_import_data_wizard_action" model="ir.actions.act_window">
+            <field name="name">HSE Database Import</field>
+            <field name="res_model">sd_hse_import.data</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+        <menuitem name="Import Data"
+                  sequence="21"
+                  id="sd_hse_import_data_menu"
+                  parent="sd_hse.hse_root_menu"
+                  groups="base.group_system"
+                  action="sd_hse_import_data_wizard_action"/>
+    </data>
+</odoo>
+

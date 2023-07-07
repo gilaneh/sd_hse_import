@@ -13,6 +13,10 @@ import base64
 from lxml import etree
 import openpyxl
 import io
+# from tabulate import tabulate
+# from prettytable import PrettyTable
+
+
 # #############################################################################
 class SdHseImportImportWizard(models.TransientModel):
     _name = 'sd_hse_import.import.wizard'
@@ -34,161 +38,135 @@ class SdHseImportImportWizard(models.TransientModel):
     excel_file_name = fields.Char()
     # sheet_names = fields.Selection(selection=sheet_list, string='Sheet Names', default='0')
     sheet_list = fields.Char()
-    file_date = fields.Date()
+    file_date = fields.Date(required=True)
+    log_field = fields.Text()
 
 
     # start_date = fields.Date(required=True, default=lambda self: date.today() )
     calendar = fields.Selection([('fa_IR', 'Persian'), ('en_US', 'Gregorian')],
                                 default=lambda self: 'fa_IR' if self.env.context.get('lang') == 'fa_IR' else 'en_US')
 
-
-
-
-    # @api.onchange('excel_file')
-    def excel_file_changed(self):
-        data_list = {'date': (1, 'Unnamed: 6'),
-                     'weather': (1, 'Unnamed: 14'),
-                     'max_temp': (2, 'Unnamed: 15'),
-                     'min_temp': (3, 'Unnamed: 15'),
-                     'wind': (4, 'Unnamed: 15'),
-                     'subcontractor': (6, 'Unnamed: 2'),
-                     'contractor': (6, 'Unnamed: 6'),
-                     'local': (6, 'Unnamed: 10'),
-                     'client': (6, 'Unnamed: 13'),
-                     'visitor': (6, 'Unnamed: 16'),
-                     'Fatality': (6, 'Unnamed: 16'),
-                     'PTD_PPD': (16, 'Unnamed: 1'),
-                     'LTI': (16, 'Unnamed: 2'),
-                     'MTC': (16, 'Unnamed: 3'),
-                     'Audits': (16, 'Unnamed: 4'),
-                     'UC_UA': (16, 'Unnamed: 5'),
-                     'Near_Miss': (16, 'Unnamed: 6'),
-                     'meetings': (16, 'Unnamed: 7'),
-                     'training': (16, 'Unnamed: 8'),
-                     'FAC': (16, 'Unnamed: 9'),
-                     'RVA': (16, 'Unnamed: 10'),
-                     'Fire': (16, 'Unnamed: 11'),
-                     'prdc': (16, 'Unnamed: 12'),
-                     'medical_rest': (16, 'Unnamed: 13'),
-                     'tbm': (21, 'Unnamed: 2'),
-                     'anomaly': (21, 'Unnamed: 6'),
-                     'drill': (21, 'Unnamed: 10'),
-                     'induction': (21, 'Unnamed: 13'),
-                     'ptw': (21, 'Unnamed: 16'),
-
-                     }
-        if self.excel_file and self.excel_file_name and (self.excel_file_name.split('.')[-1]).lower() == 'xlsx':
-            try:
-                # todo: persian and grogerian month
-                #   projec name
-                import_data = self.env['sd_hse_import.data'].search([('data_date', '>=', self.file_date)])
-                sheet_data = [rec.sheet for rec in import_data]
-                excel_file = base64.b64decode(self.excel_file)
-                bytestream = io.BytesIO(excel_file)
-                bytestream.seek(0)
-                wb = openpyxl.load_workbook(bytestream)
-                sheets = wb.sheetnames
-
-                excel_data = pd.read_excel(excel_file)
-                print(f'---------------------\n {sheets}')
-                data_all = []
-                for sheet in sheets:
-                    if sheet == '00' or sheet in sheet_data or not sheet.isdigit():
-                        continue
-
-                    row_items = [self.project, self.excel_file_name, sheet, self.file_date.replace(days=int(sheet))]
-                    new_rec_data = {'data_file': self.excel_file_name, 'data_sheet': sheet}
-
-                    df = pd.read_excel(excel_file, sheet_name=sheet)
-                    for key, value in data_list.items():
-                        row_items.append(df.loc[value])
-                        new_rec_data[f'data_{key}'] = df.loc[value]
-                    self.env['sd_hse_import.data'].create(new_rec_data)
-                    data_all.append(row_items)
-                for data in data_all:
-                    print(data)
-            except Exception as e:
-                logging.error(f'hse_test_import: {e}')
-                raise UserError(_(f'File read Error: {e}'))
-        elif self.excel_file_name:
-            self.excel_file = ''
-            self.excel_file_name = ''
-            raise UserError(_(f'Try again! select a .xlsx file '))
-
     # #############################################################################
     def hse_test_import(self):
+        self.log_field = ''
+        error_log = ''
+        log_result = ''
         read_form = self.read()[0]
         data = {'form_data': read_form}
 
         if read_form.get('excel_file'):
             data_list = {
-                # 'date': (1, 'Unnamed: 6'),
-                         'weather': (1, 'Unnamed: 14'),
-                         'max_temp': (2, 'Unnamed: 15'),
-                         'min_temp': (3, 'Unnamed: 15'),
-                         'wind': (4, 'Unnamed: 15'),
-                         'subcontractor': (6, 'Unnamed: 2'),
-                         'contractor': (6, 'Unnamed: 6'),
-                         'local': (6, 'Unnamed: 10'),
-                         'client': (6, 'Unnamed: 13'),
-                         'Fatality': (6, 'Unnamed: 16'),
-                         'PTD_PPD': (16, 'Unnamed: 1'),
-                         'LTI': (16, 'Unnamed: 2'),
-                         'MTC': (16, 'Unnamed: 3'),
-                         'Audits': (16, 'Unnamed: 4'),
-                         'UC_UA': (16, 'Unnamed: 5'),
-                         'Near_Miss': (16, 'Unnamed: 6'),
-                         'meetings': (16, 'Unnamed: 7'),
-                         'training': (16, 'Unnamed: 8'),
-                         'FAC': (16, 'Unnamed: 9'),
-                         'RVA': (16, 'Unnamed: 10'),
-                         'Fire': (16, 'Unnamed: 11'),
-                         'prdc': (16, 'Unnamed: 12'),
-                         'medical_rest': (16, 'Unnamed: 13'),
-                         'tbm': (21, 'Unnamed: 2'),
-                         'anomaly': (21, 'Unnamed: 6'),
-                         'drill': (21, 'Unnamed: 10'),
-                         'induction': (21, 'Unnamed: 13'),
-                         'ptw': (21, 'Unnamed: 16'),
+                #     'date': (1, 'Unnamed: 6'),
+                'weather': (1, 'Unnamed: 14'),
+                'max_temp': (2, 'Unnamed: 15'),
+                'min_temp': (3, 'Unnamed: 15'),
+                'wind': (4, 'Unnamed: 15'),
+                'subcontractor': (6, 'Unnamed: 2'),
+                'contractor': (6, 'Unnamed: 6'),
+                'local': (6, 'Unnamed: 10'),
+                'client': (6, 'Unnamed: 13'),
+                'visitor': (6, 'Unnamed: 16'),
+                'Fatality': (16, 'Unnamed: 1'),
+                'PTD_PPD': (16, 'Unnamed: 2'),
+                'LTI': (16, 'Unnamed: 3'),
+                'RWC': (16, 'Unnamed: 4'),
+                'illness': (16, 'Unnamed: 5'),
+                'MTC': (16, 'Unnamed: 6'),
+                'Audits': (16, 'Unnamed: 7'),
+                'UC_UA': (16, 'Unnamed: 8'),
+                'Near_Miss': (16, 'Unnamed: 9'),
+                'meetings': (16, 'Unnamed: 10'),
+                'training': (16, 'Unnamed: 11'),
+                'FAC': (16, 'Unnamed: 12'),
+                'RVA': (16, 'Unnamed: 13'),
+                'Fire': (16, 'Unnamed: 14'),
+                'prdc': (16, 'Unnamed: 15'),
+                'medical_rest': (16, 'Unnamed: 16'),
+                'tbm': (21, 'Unnamed: 2'),
+                'anomaly': (21, 'Unnamed: 6'),
+                'drill': (21, 'Unnamed: 10'),
+                'induction': (21, 'Unnamed: 13'),
+                'ptw': (21, 'Unnamed: 16'),
 
-                         }
+            }
+
             if self.excel_file and self.excel_file_name and (self.excel_file_name.split('.')[-1]).lower() == 'xlsx':
                 try:
                     # todo: persian and grogerian month
                     #   projec name
-                    import_data = self.env['sd_hse_import.data'].search([('data_date', '>=', self.file_date)])
-                    sheet_data = [rec.sheet for rec in import_data]
+                    # sheet_data = [rec.sheet for rec in import_data]
                     excel_file = base64.b64decode(self.excel_file)
                     bytestream = io.BytesIO(excel_file)
                     bytestream.seek(0)
                     wb = openpyxl.load_workbook(bytestream)
                     sheets = wb.sheetnames
+                    # return
 
-                    excel_data = pd.read_excel(excel_file)
-                    print(f'---------------------\n {sheets}')
+                    excel_data = pd.read_excel(excel_file, sheet_name=sheets)
+                    if self.calendar == 'fa_IR':
+                        month_first_day = jdatetime.date.fromgregorian(date=self.file_date).replace(day=1)
+                        next_month = month_first_day.replace(day=28) + timedelta(days=5)
+                        month_last_day = next_month - timedelta(days=next_month.day)
+                        last_day = month_last_day.day
+                        self.log_field += month_first_day.strftime('%Y/%m/%d') + '   ' + month_last_day.strftime('%Y/%m/%d') + '\n'
+                        month_first_day = month_first_day.togregorian()
+                        month_last_day = month_last_day.togregorian()
+
+                    else:
+                        month_first_day = self.file_date.replace(day=1)
+                        next_month = month_first_day.replace(day=28) + timedelta(days=5)
+                        month_last_day = (next_month - timedelta(days=next_month.day))
+                        last_day = month_last_day.day
+                        self.log_field += month_first_day.strftime('%Y/%m/%d') + ' ' + month_last_day.strftime('%Y/%m/%d') + '\n'
+
+                    import_data = self.env['sd_hse_import.data'].search([
+                                                                         '|',
+                                                                         ('active', '=', True),
+                                                                         ('active', '=', False),
+                                                                        ('data_date', '>=', month_first_day),
+                                                                         ('data_date', '<=', month_last_day),
+                                                                         ('project', '<=', self.project.id),
+                                                                         ],)
+                    import_data_date = [rec.data_date for rec in import_data]
+                    print(f'\n{import_data}\n')
+
                     data_all = []
                     for sheet in sheets:
-                        if sheet == '00' or sheet in sheet_data or not sheet.isdigit():
+                        if sheet == '00':
+                            continue
+                        sheet_day = int(sheet) if sheet.isdigit() else False
+                        if not sheet_day and sheet_day < 1 or sheet_day > last_day:
+                            error_log += _(f'{sheet:<4}')
+                            log_result += _(f'{sheet:<4}Ignored\n')
                             continue
 
-                        row_items = [self.project, self.file_date.replace(day=int(sheet)), self.excel_file_name, sheet, ]
+
+                        # print(sheet, sheet_day, last_day)
 
                         if self.calendar == 'fa_IR':
-                            data_date = jdatetime.date.fromgregorian(date=self.file_date).replace(day=int(sheet))
+                            data_date = jdatetime.date.fromgregorian(date=self.file_date).replace(day=sheet_day)
+                            log_result_date = data_date.strftime('%Y-%m-%d')
                             data_date = data_date.togregorian()
                         else:
-                            data_date = self.file_date.replace(day=int(sheet))
-                        new_rec_data = {'project': self.project.id, 'data_date': data_date, 'data_file': self.excel_file_name, 'data_sheet': sheet}
-                        print('FFFFFFFFFFFFFFFF\n', new_rec_data)
+                            data_date = self.file_date.replace(day=sheet_day)
+                            log_result_date = data_date.strftime('%Y-%m-%d')
+                        if data_date in import_data_date:
+                            error_log += _(f'{sheet:<4}')
+                            log_result += _(f'{sheet:<4}Date record already exists\n')
+                            continue
 
-                        df = pd.read_excel(excel_file, sheet_name=sheet)
+                        row_items = [self.project, data_date, self.excel_file_name, sheet, ]
+                        new_rec_data = {'project': self.project.id, 'data_date': data_date, 'data_file': self.excel_file_name, 'data_sheet': sheet}
+                        # log_result.append([self.project.name, log_result_date, self.excel_file_name, sheet])
+                        log_result += f'{sheet:<4}{log_result_date:<12}{self.project.name:<30}{self.excel_file_name:<30}\n'
+                        df = excel_data[sheet]
                         for key, value in data_list.items():
-                            row_items.append(df.loc[value])
+                            row_items.append(df.loc[value] if df.loc[value] != 'nan' else 0)
                             new_rec_data[f'data_{key}'] = df.loc[value]
                         self.env['sd_hse_import.data'].create(new_rec_data)
                         data_all.append(row_items)
-                    for data in data_all:
-                        print(data)
+                    # for data in data_all:
+                    #     print(data)
                 except Exception as e:
                     logging.error(f'hse_test_import: {e}')
                     raise UserError(_(f'File read Error: {e}'))
@@ -196,9 +174,23 @@ class SdHseImportImportWizard(models.TransientModel):
                 self.excel_file = ''
                 self.excel_file_name = ''
                 raise UserError(_(f'Try again! select a .xlsx file '))
+        # self.log_field += tabulate(log_result, headers=['Project', 'Date', 'File', 'Sheet'],tablefmt='orgtbl')
+        # t = PrettyTable(['Project', 'Date', 'File', 'Sheet'])
+        # t.add_rows(log_result)
+        # print(t)
+        # self.log_field += str(t)
+        self.log_field += 'Ignored Sheets:\n' + error_log
+        self.log_field += '\n----------------------------------------------------\n'
+        self.log_field += log_result
 
-        # return self.env.ref('sd_hse.daily_report').report_action(self, data=data)
+        return {'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'res_model': 'sd_hse_import.import.wizard',
+                'target': 'new',
+                'res_id': self.id,
+                }
 
+    def hse_close(self):
         return {'type': 'ir.actions.client', 'tag': 'reload'}
 
     # @api.model

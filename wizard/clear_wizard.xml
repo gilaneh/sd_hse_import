@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="sd_hse_import_import_wizard_form" model="ir.ui.view">
-            <field name="name">sd_hse_import.import.wizard.form</field>
-            <field name="model">sd_hse_import.import.wizard</field>
+        <record id="sd_hse_import_clear_wizard_form" model="ir.ui.view">
+            <field name="name">sd_hse_import.clear.wizard.form</field>
+            <field name="model">sd_hse_import.clear.wizard</field>
             <field name="arch" type="xml">
                 <form js_class="sheet_names">
                     <group>
                         <group>
-                            <field name="project" options='{"no_open": True, "no_create": True}'/>
+                            <field name="project" widget="many2many_tags" options='{"no_open": True, "no_create": True}'/>
                         </group>
                         <group>
 <!--                            <field name="start_date" />-->
-                            <field name="calendar" invisible="context.get('lang') != 'fa_IR'"/>
-                            <field name="excel_file" filename="excel_file_name" />
-                            <field name="excel_file_name" invisible="1" />
+<!--                            <field name="calendar" invisible="context.get('lang') != 'fa_IR'"/>-->
+<!--                            <field name="excel_file" filename="excel_file_name" />-->
+<!--                            <field name="excel_file_name" invisible="1" />-->
 
-                            <field name="file_date" widget="date" />
+                            <field name="clear_all" string="Select All" />
+                            <field name="start_date" widget="date" attrs="{'readonly': [('clear_all', '=', True)],
+                            'required': [('clear_all', '=', False)]}" />
+                            <field name="end_date" widget="date" attrs="{'readonly': [('clear_all', '=', True)],
+                            'required': [('clear_all', '=', False)]}" />
 <!--                            <field name="sheet_list" />-->
 <!--                            <div class="row sd_hse_import_sheet_names">-->
 <!--                                <div class="col-6">-->
@@ -42,7 +46,8 @@
 
 
                     <footer>
-                        <button string="Process" name="hse_test_import"  type="object" class="btn btn-primary"/>
+                        <button string="Test" name="hse_import_test"  type="object" class="btn btn-success"/>
+                        <button string="Clear" name="hse_import_clear"  type="object" class="btn btn-danger"/>
                         <button string="Close" name="hse_close"  type="object" class="btn btn-secondary"/>
 <!--                        <button string="Close" special="cancel" class="btn-secondary"/>-->
                     </footer>
@@ -51,20 +56,20 @@
             </field>
         </record>
 
-        <record id="sd_hse_import_wizard_action" model="ir.actions.act_window">
-            <field name="name">HSE Database Import</field>
-            <field name="res_model">sd_hse_import.import.wizard</field>
+        <record id="clear_wizard_action" model="ir.actions.act_window">
+            <field name="name">HSE Database Clear</field>
+            <field name="res_model">sd_hse_import.clear.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
 
 
-        <menuitem name="Import"
+        <menuitem name="Clear"
                   sequence="20"
-                  id="sd_hse_import_menu"
+                  id="clear_wizard_menu"
                   parent="sd_hse.hse_root_menu"
                   groups="base.group_system"
-                  action="sd_hse_import_wizard_action"/>
+                  action="clear_wizard_action"/>
     </data>
 </odoo>
 

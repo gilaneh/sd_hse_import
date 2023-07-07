@@ -16,7 +16,7 @@
     # for the full list
     'category': 'Service Desk/Service Desk',
     'application': True,
-    'version': '1.0.6',
+    'version': '1.0.7',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'website', 'sd_hse'],
@@ -27,6 +27,7 @@
         'security/ir.model.access.csv',
         'views/views.xml',
         'wizard/import_wizard.xml',
+        'wizard/clear_wizard.xml',
     ],
     'assets': {
         # 'website.assets_editor': [

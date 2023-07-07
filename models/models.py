@@ -52,6 +52,25 @@ class SdHseImpoertData(models.Model):
     data_induction = fields.Char(string="induction")
     data_ptw = fields.Char(string="ptw")
     description = fields.Text()
+    data_action_28 = fields.Char()
+    data_action_29 = fields.Char()
+    data_action_30 = fields.Char()
+    data_action_31 = fields.Char()
+    data_action_32 = fields.Char()
+    data_action_33 = fields.Char()
+    data_action_34 = fields.Char()
+    data_action_35 = fields.Char()
+    data_action_36 = fields.Char()
+    data_action_37 = fields.Char()
+    data_action_38 = fields.Char()
+    data_action_39 = fields.Char()
+    data_action_40 = fields.Char()
+    data_action_41 = fields.Char()
+    data_action_42 = fields.Char()
+    data_action_43 = fields.Char()
+    data_action_44 = fields.Char()
+    data_action_45 = fields.Char()
+
 
     def records_statistics(self):
         active_ids = self.env.context.get('active_ids')
@@ -141,6 +160,25 @@ class SdHseImpoertData(models.Model):
         f'ptw: {ptw}\n'
                         f'')
 
+    def process_actions(self):
+        active_ids = self.env.context.get('active_ids')
+        records = self.browse(active_ids)
+        action_model = self.env['sd_hse.actions']
+        field_refix = 'data_action_'
+        field_range = range(28, 46)
+        field_is_empty = ['', 'nan', False]
+
+        for record in records:
+            if len(action_model.search([('record_date', '=', record.data_date)], limit=1)) == 0:
+                for field in field_range:
+                    if record[f'{field_refix}{field}'] not in field_is_empty:
+                        # print(record[f'{field_refix}{field}'])
+                        action_model.create({'record_date': record.data_date,
+                                             'project': record.project.id,
+                                             'description': record[f'{field_refix}{field}']})
+
+
+
     def process_records(self):
         active_ids = self.env.context.get('active_ids')
         records = self.browse(active_ids)
@@ -161,8 +199,8 @@ class SdHseImpoertData(models.Model):
         anomaly_types = dict([(rec.name.lower(), rec.id) for rec in anomaly_types_model.search([])])
         permit_types_model = self.env['sd_hse.permit.types']
         permit_types = dict([(rec.name.lower(), rec.id) for rec in permit_types_model.search([])])
-        print('FFFFFFFFFFFFFFFF\n', 'incident_types', incident_types)
-        print(incident_types.get('fatality', False))
+        # print('FFFFFFFFFFFFFFFF\n', 'incident_types', incident_types)
+        # print(incident_types.get('fatality', False))
         # print('training_types', training_types)
         # print('drill_types', drill_types)
         # print('anomaly_types', anomaly_types)

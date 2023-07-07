@@ -55,39 +55,91 @@ class SdHseImportImportWizard(models.TransientModel):
         data = {'form_data': read_form}
 
         if read_form.get('excel_file'):
+            # data_list = {
+            #     #     'date': (1, 'Unnamed: 6'),
+            #     'weather': (1, 'Unnamed: 14'),
+            #     'max_temp': (2, 'Unnamed: 15'),
+            #     'min_temp': (3, 'Unnamed: 15'),
+            #     'wind': (4, 'Unnamed: 15'),
+            #     'subcontractor': (6, 'Unnamed: 2'),
+            #     'contractor': (6, 'Unnamed: 6'),
+            #     'local': (6, 'Unnamed: 10'),
+            #     'client': (6, 'Unnamed: 13'),
+            #     'visitor': (6, 'Unnamed: 16'),
+            #     'Fatality': (16, 'Unnamed: 1'),
+            #     'PTD_PPD': (16, 'Unnamed: 2'),
+            #     'LTI': (16, 'Unnamed: 3'),
+            #     'RWC': (16, 'Unnamed: 4'),
+            #     'illness': (16, 'Unnamed: 5'),
+            #     'MTC': (16, 'Unnamed: 6'),
+            #     'Audits': (16, 'Unnamed: 7'),
+            #     'UC_UA': (16, 'Unnamed: 8'),
+            #     'Near_Miss': (16, 'Unnamed: 9'),
+            #     'meetings': (16, 'Unnamed: 10'),
+            #     'training': (16, 'Unnamed: 11'),
+            #     'FAC': (16, 'Unnamed: 12'),
+            #     'RVA': (16, 'Unnamed: 13'),
+            #     'Fire': (16, 'Unnamed: 14'),
+            #     'prdc': (16, 'Unnamed: 15'),
+            #     'medical_rest': (16, 'Unnamed: 16'),
+            #     'tbm': (21, 'Unnamed: 2'),
+            #     'anomaly': (21, 'Unnamed: 6'),
+            #     'drill': (21, 'Unnamed: 10'),
+            #     'induction': (21, 'Unnamed: 13'),
+            #     'ptw': (21, 'Unnamed: 16'),
+            #     'action_28': (21, 'Unnamed: 16'),
+            # 
+            # }
             data_list = {
                 #     'date': (1, 'Unnamed: 6'),
-                'weather': (1, 'Unnamed: 14'),
-                'max_temp': (2, 'Unnamed: 15'),
-                'min_temp': (3, 'Unnamed: 15'),
-                'wind': (4, 'Unnamed: 15'),
-                'subcontractor': (6, 'Unnamed: 2'),
-                'contractor': (6, 'Unnamed: 6'),
-                'local': (6, 'Unnamed: 10'),
-                'client': (6, 'Unnamed: 13'),
-                'visitor': (6, 'Unnamed: 16'),
-                'Fatality': (16, 'Unnamed: 1'),
-                'PTD_PPD': (16, 'Unnamed: 2'),
-                'LTI': (16, 'Unnamed: 3'),
-                'RWC': (16, 'Unnamed: 4'),
-                'illness': (16, 'Unnamed: 5'),
-                'MTC': (16, 'Unnamed: 6'),
-                'Audits': (16, 'Unnamed: 7'),
-                'UC_UA': (16, 'Unnamed: 8'),
-                'Near_Miss': (16, 'Unnamed: 9'),
-                'meetings': (16, 'Unnamed: 10'),
-                'training': (16, 'Unnamed: 11'),
-                'FAC': (16, 'Unnamed: 12'),
-                'RVA': (16, 'Unnamed: 13'),
-                'Fire': (16, 'Unnamed: 14'),
-                'prdc': (16, 'Unnamed: 15'),
-                'medical_rest': (16, 'Unnamed: 16'),
-                'tbm': (21, 'Unnamed: 2'),
-                'anomaly': (21, 'Unnamed: 6'),
-                'drill': (21, 'Unnamed: 10'),
-                'induction': (21, 'Unnamed: 13'),
-                'ptw': (21, 'Unnamed: 16'),
-
+                'weather': (1, 14),
+                'max_temp': (2, 15),
+                'min_temp': (3, 15),
+                'wind': (4, 15),
+                'subcontractor': (6, 2),
+                'contractor': (6, 6),
+                'local': (6, 10),
+                'client': (6, 13),
+                'visitor': (6, 16),
+                'Fatality': (16, 1),
+                'PTD_PPD': (16, 2),
+                'LTI': (16, 3),
+                'RWC': (16, 4),
+                'illness': (16, 5),
+                'MTC': (16, 6),
+                'Audits': (16, 7),
+                'UC_UA': (16, 8),
+                'Near_Miss': (16, 9),
+                'meetings': (16, 10),
+                'training': (16, 11),
+                'FAC': (16, 12),
+                'RVA': (16, 13),
+                'Fire': (16, 14),
+                'prdc': (16, 15),
+                'medical_rest': (16, 16),
+                'tbm': (21, 2),
+                'anomaly': (21, 6),
+                'drill': (21, 10),
+                'induction': (21, 13),
+                'ptw': (21, 16),
+                'action_28': (28, 0),
+                'action_29': (29, 0),
+                'action_30': (30, 0),
+                'action_31': (31, 0),
+                'action_32': (32, 0),
+                'action_33': (33, 0),
+                'action_34': (34, 0),
+                'action_35': (35, 0),
+                'action_36': (36, 0),
+                'action_37': (37, 0),
+                'action_38': (38, 0),
+                'action_39': (39, 0),
+                'action_40': (40, 0),
+                'action_41': (41, 0),
+                'action_42': (42, 0),
+                'action_43': (43, 0),
+                'action_44': (44, 0),
+                'action_45': (45, 0),
             }
 
             if self.excel_file and self.excel_file_name and (self.excel_file_name.split('.')[-1]).lower() == 'xlsx':
@@ -160,9 +212,16 @@ class SdHseImportImportWizard(models.TransientModel):
                         # log_result.append([self.project.name, log_result_date, self.excel_file_name, sheet])
                         log_result += f'{sheet:<4}{log_result_date:<12}{self.project.name:<30}{self.excel_file_name:<30}\n'
                         df = excel_data[sheet]
+                        sheet_rows = len(df)
+                        sheet_row = 0
                         for key, value in data_list.items():
-                            row_items.append(df.loc[value] if df.loc[value] != 'nan' else 0)
-                            new_rec_data[f'data_{key}'] = df.loc[value]
+                            # row_items.append(df.loc[value] if df.loc[value] != 'nan' else 0)
+                            # new_rec_data[f'data_{key}'] = df.loc[value]
+                            sheet_row += 1
+                            if sheet_row == sheet_rows:
+                                break
+                            row_items.append(df.iloc[value] if df.iloc[value] != 'nan' else 0)
+                            new_rec_data[f'data_{key}'] = df.iloc[value]
                         self.env['sd_hse_import.data'].create(new_rec_data)
                         data_all.append(row_items)
                     # for data in data_all:

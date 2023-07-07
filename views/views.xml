@@ -8,7 +8,8 @@
                 <tree editable="bottom" multi_edit="1">
                     <header>
                         <button name="records_statistics" string="Statistics" type="object" class="btn btn-success mx-1"/>
-                        <button name="process_records" string="Process" type="object" class="btn btn-danger mx-1"/>
+                        <button name="process_records" string="Process Records" type="object" class="btn btn-info mx-1"/>
+                        <button name="process_actions" string="Process Actions" type="object" class="btn btn-warning mx-1"/>
                     </header>
                     <field name="active" invisible="1" />
 
@@ -48,6 +49,24 @@
                     <field name="data_drill"/>
                     <field name="data_induction"/>
                     <field name="data_ptw"/>
+                    <field name="data_action_28"/>
+                    <field name="data_action_29"/>
+                    <field name="data_action_30"/>
+                    <field name="data_action_31"/>
+                    <field name="data_action_32"/>
+                    <field name="data_action_33"/>
+                    <field name="data_action_34"/>
+                    <field name="data_action_35"/>
+                    <field name="data_action_36"/>
+                    <field name="data_action_37"/>
+                    <field name="data_action_38"/>
+                    <field name="data_action_39"/>
+                    <field name="data_action_40"/>
+                    <field name="data_action_41"/>
+                    <field name="data_action_42"/>
+                    <field name="data_action_43"/>
+                    <field name="data_action_44"/>
+                    <field name="data_action_45"/>
                 </tree>
             </field>
         </record>

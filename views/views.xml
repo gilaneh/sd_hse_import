@@ -77,8 +77,47 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="active" />
+                    <field name="data_Fatality"/>
+                    <field name="data_PTD_PPD"/>
+                    <field name="data_LTI"/>
+                    <field name="data_RWC"/>
+                    <field name="data_illness"/>
+                    <field name="data_MTC"/>
+                    <field name="data_Audits"/>
+                    <field name="data_UC_UA"/>
+                    <field name="data_Near_Miss"/>
+                    <field name="data_meetings"/>
+                    <field name="data_training"/>
+                    <field name="data_FAC"/>
+                    <field name="data_RVA"/>
+                    <field name="data_Fire"/>
+                    <field name="data_prdc"/>
+                    <field name="data_medical_rest"/>
+                    <field name="active" />
+
                     <separator/>
                     <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <filter string="Fatality" name="fatality_filter" domain="[('data_Fatality', '!=', 0)]"/>
+                    <filter string="PTD PPD" name="ptd_ppd_filter" domain="[('data_PTD_PPD', '!=', 0)]"/>
+                    <filter string="LTI" name="data_LTI_filter" domain="[('data_LTI', '!=', 0)]"/>
+                    <filter string="RWC" name="data_RWC_filter" domain="[('data_RWC', '!=', 0)]"/>
+                    <filter string="MTC" name="data_MTC_filter" domain="[('data_MTC', '!=', 0)]"/>
+                    <filter string="Near_Miss" name="data_Near_Miss_filter" domain="[('data_Near_Miss', '!=', 0)]"/>
+                    <filter string="FAC" name="data_FAC_filter" domain="[('data_FAC', '!=', 0)]"/>
+                    <filter string="RVA" name="data_RVA_filter" domain="[('data_RVA', '!=', 0)]"/>
+                    <filter string="Fire" name="data_Fire_filter" domain="[('data_Fire', '!=', 0)]"/>
+                    <filter string="medical_rest" name="data_medical_rest_filter" domain="[('data_medical_rest', '!=', 0)]"/>
+                    <filter string="Incidents" name="incidents" domain="['|', ('data_Fatality', '!=', 0),
+                                                                                ('data_PTD_PPD', '!=', 0),
+                                                                                ('data_LTI', '!=', 0),
+                                                                                ('data_RWC', '!=', 0),
+                                                                                ('data_MTC', '!=', 0),
+                                                                                ('data_Near_Miss', '!=', 0),
+                                                                                ('data_FAC', '!=', 0),
+                                                                                ('data_RVA', '!=', 0),
+                                                                                ('data_RVA', '!=', 0),
+                                                                                ('data_Fire', '!=', 0),
+                                                                                ]"/>
                 </search>
             </field>
         </record>
